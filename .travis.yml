@@ -25,6 +25,7 @@ r_packages:
   -  rmarkdown
   -  testthat
   -  ggplot2
+  -  covr
 bioc_packages:
   - BiocParallel
   - diffcyt
@@ -32,3 +33,5 @@ bioc_packages:
   - SummarizedExperiment
   - edgeR
   - S4Vectors
+after_success:
+  - Rscript -e 'library(covr); codecov()'
