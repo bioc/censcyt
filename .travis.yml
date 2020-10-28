@@ -25,7 +25,7 @@ r_packages:
   -  rmarkdown
   -  testthat
   -  ggplot2
-bioc_manager:
+bioc_packages:
   - BiocParallel
   - diffcyt
   - BiocStyle
