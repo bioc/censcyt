@@ -1,0 +1,52 @@
+Package: censcyt
+Version: 0.99.0
+Title: Differential abundance analysis in high-dimensional cytometry with a right censored covariate 
+Description: Methods for differential abundance analysis in high-dimensional cytometry data when a covariate is subject to right censoring (e.g. survival time) based on multiple imputation and generalized linear mixed models.
+Authors@R: person("Reto", "Gerber", email = "gerberreto@pm.me", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-5414-8906"))
+URL: https://github.com/retogerber/censcyt
+BugReports: https://github.com/retogerber/censcyt/issues
+License: MIT + file LICENSE
+biocViews:
+    ImmunoOncology, 
+    FlowCytometry, 
+    Proteomics, 
+    SingleCell, 
+    CellBasedAssays, 
+    CellBiology, 
+    Clustering, 
+    FeatureExtraction, 
+    Software,
+    Survival
+Depends: R (>= 4.0)
+Imports:
+    BiocParallel,
+    broom.mixed,
+    diffcyt,
+    dirmult,
+    dplyr, 
+    edgeR,
+    fitdistrplus,
+    lme4, 
+    magrittr, 
+    MASS,
+    methods, 
+    mice,
+    multcomp, 
+    purrr,
+    rlang,
+    S4Vectors,
+    stats, 
+    stringr,
+    SummarizedExperiment, 
+    survival,
+    tibble,
+    tidyr, 
+    utils 
+VignetteBuilder: knitr
+Suggests:
+    BiocStyle,
+    knitr,
+    rmarkdown,
+    testthat,
+    ggplot2
+RoxygenNote: 7.1.1

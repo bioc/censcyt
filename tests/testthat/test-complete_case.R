@@ -1,0 +1,40 @@
+
+
+lm_formula_s <- formula(Y ~ Surv(X,I) + Z)
+lm_formula <- formula(Y ~ X + Z)
+data_sim_lm <- simulate_singlecluster(100, lm_formula_s, type = "lm")
+glm_formula_s <- formula(Y ~ Surv(X,I) + Z)
+glm_formula <- formula(Y ~ X + Z)
+data_sim_glm <- simulate_singlecluster(100, glm_formula_s, type = "glm",)
+glmer_formula_s <- formula(Y ~ Surv(X,I) + Z + (1|R))
+glmer_formula <- formula(Y ~ X + Z + (1|R))
+data_sim_glmer <- simulate_singlecluster(100, glmer_formula_s, type = "glmer")
+
+
+test_that("complete_case correct output lm",{
+  comp_lm_out <- suppressWarnings(complete_case(data_sim_lm, "X","I", lm_formula, "lm"))
+  expect_equal(length(comp_lm_out),4)
+  expect_equal(names(comp_lm_out),c("data","betasMean","betasVar","fits"))
+  expect_equal(class(comp_lm_out[[4]]),"lm")
+  expect_equal(dim(comp_lm_out[[1]])[1],100)
+  expect_equal(length(comp_lm_out[[2]]),3)
+  expect_equal(length(comp_lm_out[[3]]),3)
+})
+test_that("complete_case correct output glm",{
+  comp_glm_out <- suppressWarnings(complete_case(data_sim_glm, "X","I", glm_formula, "glm",weights = "size_tot",family = "binomial"))
+  expect_equal(length(comp_glm_out),4)
+  expect_equal(names(comp_glm_out),c("data","betasMean","betasVar","fits"))
+  expect_equal(class(comp_glm_out[[4]]),c("glm","lm"))
+  expect_equal(dim(comp_glm_out[[1]])[1],100)
+  expect_equal(length(comp_glm_out[[2]]),3)
+  expect_equal(length(comp_glm_out[[3]]),3)
+})
+test_that("complete_case correct output glmer",{
+  comp_glmer_out <- suppressWarnings(complete_case(data_sim_glmer, "X","I", glmer_formula, "glmer",weights = "size_tot",family = "binomial"))
+  expect_equal(length(comp_glmer_out),4)
+  expect_equal(names(comp_glmer_out),c("data","betasMean","betasVar","fits"))
+  expect_equal(class(comp_glmer_out[[4]])[1],"glmerMod")
+  expect_equal(dim(comp_glmer_out[[1]])[1],100)
+  expect_equal(length(comp_glmer_out[[2]]),3)
+  expect_equal(length(comp_glmer_out[[3]]),3)
+})

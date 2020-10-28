@@ -1,0 +1,45 @@
+
+
+lm_formula_s <- formula(Y ~ Surv(X,I) + Z)
+lm_formula <- formula(Y ~ X + Z)
+data_sim_lm <- simulate_singlecluster(100, lm_formula_s, type = "lm")
+glm_formula_s <- formula(Y ~ Surv(X,I) + Z)
+glm_formula <- formula(Y ~ X + Z)
+data_sim_glm <- simulate_singlecluster(100, glm_formula_s, type = "glm",)
+glmer_formula_s <- formula(Y ~ Surv(X,I) + Z + (1|R))
+glmer_formula <- formula(Y ~ X + Z + (1|R))
+data_sim_glmer <- simulate_singlecluster(100, glmer_formula_s, type = "glmer")
+
+pmm_lm_out <- predictive_mean_matching(data_sim_lm, "X","I",c("Z","Y"), lm_formula, "lm")
+pmm_glm_out <- suppressWarnings(predictive_mean_matching(data_sim_glm, "X","I",c("Z","Y"), glm_formula, "glm",weights = "size_tot",family = "binomial"))
+pmm_glmer_out <- suppressMessages(suppressWarnings(predictive_mean_matching(data_sim_glmer, "X","I",c("Z","Y","R"), glmer_formula, "glmer",weights = "size_tot",family = "binomial")))
+
+test_that("predictive_mean_matching correct output lm",{
+  expect_equal(length(pmm_lm_out),4)
+  expect_equal(names(pmm_lm_out),c("data","betasMean","betasVar","fits"))
+  expect_equal(class(pmm_lm_out[[4]]),"list")
+  expect_true(all(purrr::map_lgl(pmm_lm_out[[4]],~is(.x,"lm"))))
+  expect_equal(length(pmm_lm_out[[4]]),10)
+  expect_equal(dim(pmm_lm_out[[1]])[1],100)
+  expect_equal(length(pmm_lm_out[[2]]),3)
+  expect_equal(length(pmm_lm_out[[3]]),3)
+})
+test_that("predictive_mean_matching correct output glm",{
+  expect_equal(length(pmm_glm_out),4)
+  expect_equal(names(pmm_glm_out),c("data","betasMean","betasVar","fits"))
+  expect_equal(class(pmm_glm_out[[4]]),c("list"))
+  expect_true(all(purrr::map_lgl(pmm_glm_out[[4]],~ is(.x,"glm"))))
+  expect_equal(dim(pmm_glm_out[[1]])[1],100)
+  expect_equal(length(pmm_glm_out[[2]]),3)
+  expect_equal(length(pmm_glm_out[[3]]),3)
+})
+test_that("predictive_mean_matching correct output glmer",{
+  expect_equal(length(pmm_glmer_out),4)
+  expect_equal(names(pmm_glmer_out),c("data","betasMean","betasVar","fits"))
+  expect_equal(class(pmm_glmer_out[[4]])[1],"list")
+  expect_true(all(purrr::map_lgl(pmm_glmer_out[[4]],~is(.x,"glmerMod"))))
+  expect_equal(dim(pmm_glmer_out[[1]])[1],100)
+  expect_equal(length(pmm_glmer_out[[2]]),3)
+  expect_equal(length(pmm_glmer_out[[3]]),3)
+})
+
