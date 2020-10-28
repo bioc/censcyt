@@ -1,0 +1,34 @@
+language: r
+r: bioc-devel
+sudo: required
+cache: packages
+r_packages:
+  -  broom.mixed
+  -  dirmult
+  -  dplyr
+  -  fitdistrplus
+  -  lme4 
+  -  magrittr 
+  -  MASS
+  -  methods 
+  -  mice
+  -  multcomp 
+  -  purrr
+  -  rlang
+  -  stats 
+  -  stringr
+  -  survival
+  -  tibble
+  -  tidyr 
+  -  utils 
+  -  knitr
+  -  rmarkdown
+  -  testthat
+  -  ggplot2
+bioc_manager:
+  - BiocParallel
+  - diffcyt
+  - BiocStyle
+  - SummarizedExperiment
+  - edgeR
+  - S4Vectors
