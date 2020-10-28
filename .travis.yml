@@ -2,6 +2,9 @@ language: r
 r: bioc-devel
 sudo: required
 cache: packages
+before_install:
+  - sudo apt-get update
+  - sudo apt-get -y install libxml2-dev zlib1g-dev  r-cran-igraph libglpk-dev qpdf
 r_packages:
   -  broom.mixed
   -  dirmult
