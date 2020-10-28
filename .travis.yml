@@ -1,10 +1,8 @@
+os: linux
 dist: bionic
 language: r
 r: 
   - bioc-devel
-  - release
-  - devel
-sudo: required
 cache: packages
 addons:
   apt:
