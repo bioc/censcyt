@@ -2,7 +2,7 @@ os: linux
 dist: bionic
 language: r
 r: 
-  - bioc-devel
+  - bioc-release
 cache: packages
 addons:
   apt:
