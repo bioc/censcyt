@@ -1,5 +1,7 @@
 # censcyt
 
+[![Build Status](https://travis-ci.org/retogerber/censcyt.svg?branch=main)](https://travis-ci.org/retogerber/censcyt)
+[![codecov](https://codecov.io/gh/retogerber/censcyt/branch/main/graph/badge.svg)](https://codecov.io/gh/retogerber/censcyt)
 
 ## Summary
 

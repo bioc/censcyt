@@ -1,7 +1,16 @@
+os: linux
+dist: bionic
 language: r
-r: bioc-devel
-sudo: required
+r: 
+  - bioc-release
 cache: packages
+addons:
+  apt:
+    packages:
+      - libxml2-dev
+      - zlib1g-dev  
+      - r-cran-igraph 
+      - libglpk-dev qpdf
 r_packages:
   -  broom.mixed
   -  dirmult
@@ -25,10 +34,13 @@ r_packages:
   -  rmarkdown
   -  testthat
   -  ggplot2
-bioc_manager:
+  -  covr
+bioc_packages:
   - BiocParallel
   - diffcyt
   - BiocStyle
   - SummarizedExperiment
   - edgeR
   - S4Vectors
+after_success:
+  - Rscript -e 'library(covr); codecov()'
