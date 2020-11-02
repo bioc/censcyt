@@ -1,7 +1,7 @@
-#' Test for differential abundance: method 'diffcyt-DA-censored-GLMM'
+#' Test for differential abundance: method 'censcyt-DA-censored-GLMM'
 #' 
 #' Calculate tests for differential abundance of cell populations using method
-#' 'diffcyt-DA-censored-GLMM'
+#' 'censcyt-DA-censored-GLMM'
 #' 
 #' Calculates tests for differential abundance of clusters, using generalized linear mixed
 #' models (GLMMs) where a covariate is subject to right censoring.

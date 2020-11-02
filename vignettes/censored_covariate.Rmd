@@ -1,17 +1,17 @@
 ---
-title: "Censored covariate workflow"
+title: "Censored covariate in cytometry"
 author:
   - name: Reto Gerber
     affiliation: 
       - &id1 "Institute of Molecular Life Sciences, University of Zurich, Zurich, Switzerland"
       - &id2 "SIB Swiss Institute of Bioinformatics, University of Zurich, Zurich, Switzerland"
-package: diffcyt
+package: censcyt
 output:
   BiocStyle::html_document
 abstract: |
-  This vignette shows an example of how to perform differential abundance (DA) analysis with a covariate subject to right censoring (e.g. survival time) in the `diffcyt` package.
+  `censcyt` provides functionalities for differential abundance analysis in cytometry when a covariate is subject to right censoring (e.g. survival time).
 vignette: |
-  %\VignetteIndexEntry{Censored covariate diffcyt workflow}
+  %\VignetteIndexEntry{Censored covariate}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: references.bib
@@ -24,44 +24,50 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction
 
-This vignette shows an example of how to perform differential abundance (DA) analysis with a covariate subject to right censoring (e.g. survival time) in the `censcyt` package. Before going through this vignette it is advisable to have a look at the [diffcyt workflow vignette](http://bioconductor.org/packages/release/bioc/vignettes/diffcyt/inst/doc/diffcyt_workflow.html) which considers the 'normal' (fully observed) case.
+The `censcyt` package provides functionalities for differential abundance analysis in cytometry when a covariate is subject to right censoring. It extends the differential
+discovery capabilities of the [diffcyt](https://bioconductor.org/packages/diffcyt) package [@Weber2019] 
+by including association testing between the cell population abundance and a censored variable such as survival time. The general workflow is the same as described in the [diffcyt package vignette](http://bioconductor.org/packages/release/bioc/vignettes/diffcyt/inst/doc/diffcyt_workflow.html)
+and it is advisable to be familiar with it before continuing.
 
-If a time-to-event variable (e.g. survival time) connected to a cytometry sample is available, one might be interested in the association between the cell population abundance and this time-to-event variable. In practice, a frequent problem with time-to-even variables is that not all events are observed. Instead it could be that only a minimum time is known, with other words those values are (right) censored. If standard analysis would be used (such as `testDA_GLMM` or `testDA_edgeR` from the [diffcyt](https://bioconductor.org/packages/diffcyt) package) a bias is introduced in the parameter estimation. The simplest workaround is to exclude all incomplete samples, which is known under the name of complete case analysis or listwise deletion. But there are cases where this approach is not advisable, since it can greatly reduce statistical power (when the censoring rate is high) and might intoduces a bias (when censoring is not random).
+As a short summary, the `diffcyt` workflow consists of preprocessing of raw cytometry data, cell type assignment through automated clustering and differential abundance analysis (or differential state analysis) [@Weber2019]. 
+If a time-to-event variable (e.g. survival time) connected to a cytometry sample is available, one might be interested in the association between the cell population abundance and this time-to-event variable. In practice, a frequent problem with time-to-even variables is that not all events are observed. Instead it is possible that only a minimum time is known, with other words those values are (right) censored. If standard analysis would be used (such as `testDA_GLMM` or `testDA_edgeR` from `diffcyt`) a bias is introduced in the parameter estimation. The simplest workaround is to exclude all incomplete samples, which is known under the name of complete case analysis or listwise deletion. But there are cases, such as high censoring rates or non random censoring, where this approach performs unfavorably, since it can greatly reduce statistical power or introduce a bias.
 
 <!-- Want to do DA analysis to find cell populations whose abundance is associated with survival time (or in general a time-to-event variable). -->
 
-Normally, when a variable is censored, association testing can be done using classical survival analysis methods (e.g. Cox proportional hazard model). But in the context of differential abundance analysis in `diffcyt` the censored variable is not the response but a covariate (in contrary to classical survival analyis). The approach used to overcome this hurdle is multiple imputation [@Rubin1988] which allows the use of the standard differential analysis methods at the cost of increased computational cost. Multiple imputation consists of the three steps `Imputation`, `Analysis` and `Pooling`.
+Normally, when a variable is censored, association testing can be done using classical survival analysis methods (e.g. Cox proportional hazard model). But in the context of differential abundance analysis in `diffcyt` the censored variable is not the response but a covariate (in contrary to classical survival analyis). The approach used by `censcyt` to overcome this hurdle is multiple imputation [@Rubin1988] which allows the use of the standard differential analysis methods at the cost of increased runtimes. Multiple imputation consists of the three steps *Imputation*, *Analysis* and *Pooling* which are shortly explained in the context of `censcyt`.
 
-In the first step (`Imputation`) multiple complete data sets are generated by replacing the missing (or censored) values by a random draw from a predictive distribution (See \@ref(tab:methods)).
-Then in the second step (`Analysis`) a GLMM is fitted on each imputated datasets.
-In the last step (`Pooling`) the results from the second step are combined using Rubins's rules which take into account the additional variance from the imputation.
+In the first step (*Imputation*) multiple complete data sets are generated by replacing the missing (or censored) values by a random draw from a predictive distribution (See Table \@ref(tab:methods)).
+Then in the second step (*Analysis*) a GLMM is fitted on each imputed dataset where the cell population counts are modeled as the response and the censored (or rather imputed) variable (e.g. survival time) as a covariate.
+In the last step (*Pooling*) the results from the second step are combined using Rubins's rules [@Rubin1988] which take into account the additional uncertainties from the imputation.
 
-In the main function `testDA_censoredGLMM` there are three main imputation methods available:
+The three main available imputation methods in the function `testDA_censoredGLMM` are listed in Table @ref(tab:methods).
 
 Method | Description| Abbr. 
 -------|------------------------|--
 Complete case analysis | Incomplete samples are removed. | cc
- Risk set imputation [@Taylor2002] | The censored values are replace by a random value from its risk set.| rs
-Kaplan-Meier imputation [@Taylor2002] |  A censored value is replaced by a random draw from a survival function that has been fit on the risk set of the respective censored value.| km 
-Mean residual life imputation [@Atem2017]|  Bootstrapping of the incomplete data and replacement of the censored values by adding the mean residual life (the expected time until event given the censoring time).| mrl 
+ Risk set imputation [@Taylor2002] | Censored values are replace by a random value from its risk set.| rs
+Kaplan-Meier imputation [@Taylor2002] |  Censored values are replaced by a random draw from a survival function that has been fit on the risk set of the respective censored value.| km 
+Mean residual life imputation (Conditional multiple imputation, @Atem2017)|  Bootstrapping of the incomplete data and replacement of the censored values by adding the mean residual life (the expected time until event given the censoring time).| mrl 
 
 : (\#tab:methods) Description of imputation methods.
 
-If the largest value is censored the survival function does not reach its theoretical minimum of 0 which would leave some replacements undefined. Multiple options to handle this problem are implemented for use in Kaplan-Meier imputation:
+If the largest value is censored, the survival function does not reach its theoretical minimum of 0, which would leave some replacements undefined. Multiple options to handle this problem are implemented for use in Kaplan-Meier imputation (Table @ref(tab:tailmethods)).
 
 Description |  Abbr. 
 ------------------------|--
 Set the largest value as observed. (default) | km 
-Model tail of the survival function as an exponential distribution. [@Moeschberger1985] | km_exp 
-Model tail of the survival function as a weibull distribution. [@Moeschberger1985] | km_wei 
+Model the tail of the survival function as an exponential distribution. [@Moeschberger1985] | km_exp 
+Model the tail of the survival function as a weibull distribution. [@Moeschberger1985] | km_wei 
 Replace all censored values larger than the largest observed value with expected values according to order statistics. [@Moeschberger1985] | km_os 
 
 : (\#tab:tailmethods) Description of survival function tail approximation.
 
 
 
-# Data set
-First load the necessary packages
+# Data
+First, load the necessary packages. Important to note is that `censcyt` will
+overwrite the `createFormula` function from `diffcyt`, so make sure to load `censcyt` 
+**after** `diffcyt` or specify the namespace (i.e. `censcyt::createFormula`).
 ```{r load packages}
 suppressPackageStartupMessages({
   library(diffcyt)
@@ -72,33 +78,35 @@ suppressPackageStartupMessages({
 })
 ```
 
-The main input for DA analysis consists of a matrix of counts representing the number of cells in a cluster (cell population) in a sample. How to obtain those counts is explained in the [main vignette](http://bioconductor.org/packages/release/bioc/vignettes/diffcyt/inst/doc/diffcyt_workflow.html) and will not be further considered here, instead for purely illustrative purposes a dataset is simulated. The simulation function `simulate_multicluster` models the data according to a dirichlet-multinomial distribution where some clusters have an association with a covariate.
+The main input for DA analysis consists of a cluster times sample matrix of cell population abundances. How to obtain those counts is explained in the [diffcyt vignette](http://bioconductor.org/packages/release/bioc/vignettes/diffcyt/inst/doc/diffcyt_workflow.html) and will not be further considered here. Instead, for illustrative purposes, a dataset is simulated.  In this case, the censored covariate is modeled according to an exponential distribution. To obtain censoring, an additional variable, the censoring time, is simulated as well and the actual measured value is the minimum of those two variables. 
 
-```{r data_simulation}
+```{r data_simulation covariate}
 set.seed(1234)
 
 nr_samples <- 50
-nr_clusters <- 4
-# number of cell per sample
-sizes <- round(runif(nr_samples,1e3,1e4))
-# alpha parameters of the dirichlet-multinomial distribution. 
-alphas <- runif(nr_clusters,1,10)
-
+nr_clusters <- 6
 # the covariate is simulated from an exponential distribution:
-X <- rexp(nr_samples)
+X_true <- rexp(nr_samples)
 # the censoring time is also sampled from an exponential distribution:
 C <- rexp(nr_samples)
 # the actual observed value is the minimum of the two:
-T <- pmin(X,C)
+X_obs <- pmin(X_true,C)
 # additionally, we have the event indicator:
-I <- ifelse(X>C,0,1)
+Event_ind <- ifelse(X_true>C,0,1)
 # proportion censored:
-(length(I)-sum(I))/length(I)
+(length(Event_ind)-sum(Event_ind))/length(Event_ind)
+```
 
+Next, the cell counts are modeled according to a dirichlet-multinomial distribution where some clusters have an association with a covariate. The function `simulate_multicluster` can be used for this.
+```{r data_simulation multicluster}
+# number of cells per sample
+sizes <- round(runif(nr_samples,1e3,1e4))
+# alpha parameters of the dirichlet-multinomial distribution. 
+alphas <- runif(nr_clusters,1,10)
 # main simulation function
 simulation_output <- simulate_multicluster(alphas = alphas,
                                            sizes = sizes,
-                                           covariate = X,
+                                           covariate = X_obs,
                                            nr_diff = 2,
                                            return_summarized_experiment = TRUE,
                                            slope = list(0.9))
@@ -106,26 +114,30 @@ simulation_output <- simulate_multicluster(alphas = alphas,
 d_counts <- simulation_output$counts
 ```
 
-Let's have a short look at the simulated data and plot association of covariate vs. proportion
-```{r diffplot, fig.cap="Cell population proportion vs. survival time (T). I is the indicator function with I=0: censored and I=1: observed.", fig.wide=TRUE}
+To get a sense of how this simulated data looks like we can plot the relative cell population abundance for each sample vs. the censored covariate per cell population.
+```{r diffplot, fig.cap="Relative cell population abundance vs. survival time (X_obs). Event_ind indicates if X_obs is censored or observed.", fig.wide=TRUE}
 
 # vector indicating if a cluster has a modeled association or not
 is_diff_cluster <- ifelse(is.na(simulation_output$row_data$paired),FALSE,TRUE)
 # first convert to proportions:
 proportion <- as.data.frame(t(apply(assay(d_counts),2,function(x)x/sum(x))))
-names(proportion) <- paste0("Nr: ",names(proportion), " - ", ifelse(is_diff_cluster,"DA","non DA"))
+names(proportion) <- paste0("Nr: ",names(proportion), " - ", 
+                            ifelse(is_diff_cluster,"DA","non DA"))
 # then to long format for plotting
 counts_long <-
-  pivot_longer(proportion, cols= seq_len(nr_clusters),names_to = "cluster_id",values_to = "proportion")
-# add association
-counts_long$is_diff_cluster <- rep(is_diff_cluster,nr_samples)
+  pivot_longer(proportion, 
+               cols= seq_len(nr_clusters),
+               names_to = "cluster_id",
+               values_to = "proportion")
 # add observed (partly censored) variable
-counts_long$T <- rep(T,each=nr_clusters)
+counts_long$X_obs <- rep(X_obs,each=nr_clusters)
 # add event indicator
-counts_long$I <- as.factor(rep(I,each=nr_clusters))
+counts_long$Event_ind <- factor(rep(Event_ind,each=nr_clusters),
+                                levels = c(0,1),
+                                labels=c("censored","observed"))
 
 ggplot(counts_long) +
-  geom_point(aes(x=T,y=proportion,color=I)) +
+  geom_point(aes(x=X_obs,y=proportion,color=Event_ind)) +
   facet_wrap(~cluster_id)
 ```
 
@@ -133,39 +145,129 @@ ggplot(counts_long) +
 
 # Set up meta-data
 
-Next we need to set up the meta data, i.e. the covariates that are used in the testing.
+Next step is to set up the meta data, i.e. the covariates that are used in the testing. This is done the same way as in `diffcyt` but additionally the event indicator for the censored covariate has to be given, since censored variables are represented by two values, the measured value itself and an indicator if the measured value is observed (1) or censored (0). 
 
 ```{r experiment_info}
 # all covariates and sample ids
-experiment_info <- data.frame(ID = seq_len(nr_samples), T = T, I = I)
+experiment_info <- data.frame(sample_id = seq_len(nr_samples),
+                              X_obs = X_obs, 
+                              Event_ind = Event_ind)
 ```
 
-Variables that are right censored are represented by two vectors, one is the measured values and the second indicates if the measured values are observed (1) or censored (0). The `createFormula` function is the same as used in the normal `diffcyt` workflow but additionally the argument `event_indicator` has to be specified by giving the respective column name in `experiment_info`. If multiple covariates are given in argument `cols_fixed` then `event_indicator` is associated with the first element given to `cols_fixed`.
+The `createFormula` function is similar to the one used in `diffcyt` but additionally the argument `event_indicator` has to be specified by giving the respective column name in `experiment_info`. If multiple covariates are given in argument `cols_fixed` then `event_indicator` is associated with the first element given to `cols_fixed`.
 ```{r formula_contrast}
 da_formula <- createFormula(experiment_info = experiment_info,
-                            cols_fixed = "T",
-                            cols_random = "ID",
-                            event_indicator = "I")
+                            cols_fixed = "X_obs",
+                            cols_random = "sample_id",
+                            event_indicator = "Event_ind")
 # also create contrast matrix for testing
 contrast <- matrix(c(0,1))
 ```
 
 
 # Differential testing
-The main part is the differential testing which is analog to the normal workflow and is done using the function `testDA_censoredGLMM`. It consists of the same argument as the non-censored version `testDA_GLMM` with two additional arguments specific to the multiple imputation. The first additional argument is `mi_reps` (multiple imputation repetitions) which is the number of multiple imputation steps performed. Unfortunately there is no clear rule as to how many imputations are needed and only rules of thumb are availabe [@VanBuuren2018]. In general, more imputations are needed if the censoring rate is high and in applications where a high statistical power is needed [@VanBuuren2018]. One 'rule' is the quadratic rule of @VonHippel2018 which can be shown if `verbose` is set to  `TRUE`. 
-The second argument is `imputation_method` to specify which imputation method should be used. See Table \@ref(tab:methods) and Table \@ref(tab:tailmethods) for possible values.
+The main part is the differential testing which is done using the function `testDA_censoredGLMM`. It consists of the same arguments as the non-censored version `testDA_GLMM` (from `diffcyt`) with two additional arguments specific to multiple imputation. The first additional argument is `mi_reps` (multiple imputation repetitions) which is the number of multiple imputation steps performed. Unfortunately there is no clear rule as to how many imputations are needed and only rules of thumb are available [@VanBuuren2018]. In general, more imputations are needed if the censoring rate is high and in applications where high statistical power is needed [@VanBuuren2018]. One 'rule' is the quadratic rule of @VonHippel2018 which can be shown if `verbose` is set to  `TRUE`. 
+The second argument is `imputation_method` which is used to specify the imputation method. See Table \@ref(tab:methods) and Table \@ref(tab:tailmethods).
 ```{r differential_testing, message=TRUE}
 # test with 50 repetitions with method risk set imputation (rs)
 da_out <- testDA_censoredGLMM(d_counts = d_counts,
                               formula = da_formula,
                               contrast = contrast,
-                              mi_reps = 50,
-                              imputation_method = "rs",
-                              verbose = TRUE)
+                              mi_reps = 30,
+                              imputation_method = "km",
+                              verbose = TRUE,
+                              BPPARAM=BiocParallel::MulticoreParam(workers = 1))
+```
+To look at the results we can use `diffcyt`'s `topTable` function:
+```{r differential_testing evaluation, message=TRUE}
 topTable(da_out)
 
 # compare to actual differential clusters:
 which(!is.na(simulation_output$row_data$paired))
+```
+
+
+# Wrapper function
+Instead of using the single functions as shown above, it is possible use the wrapper
+function `censcyt` which is the analog to the `diffcyt` wrapper. First, some expression data is simulated, i.e. a more realistic starting position than in the example above.
+```{r wrapper function create data}
+# Function to create expression data (one sample)
+fcs_sim <- function(n = 2000, mean = 0, sd = 1, ncol = 10, cof = 5) {
+  d <- matrix(sinh(rnorm(n*ncol, mean, sd)) * cof,ncol=ncol)
+  # each marker is heavily expressed in one population, i.e. this should result 
+  # in 'ncol' clusters
+  for(i in seq_len(ncol)){
+    d[seq(n/ncol*(i-1)+1,n/ncol*(i)),i] <- 
+      sinh(rnorm(n/ncol, mean+2, sd)) * cof
+  }
+  colnames(d) <- paste0("marker", sprintf("%02d", 1:ncol))
+  d
+}
+
+# create multiple expression data samples with DA signal
+comb_sim <- function(X, nr_samples = 10, mean = 0, sd = 1, ncol = 10, cof = 5){
+  # Create random data (without differential signal)
+  d_input <- lapply(seq_len(nr_samples), 
+                    function(i) fcs_sim(mean = mean, 
+                                        sd = sd,
+                                        ncol = ncol,
+                                        cof = cof))
+  # Add differential abundance (DA) signal
+  for(i in seq_len(nr_samples)){
+    # number of cells in cluster 1
+    n_da <- round((plogis(X_true[i]))*300)
+    # set to random expression
+    d_input[[i]][seq_len(n_da), ] <- 
+      matrix(sinh(rnorm(n_da*ncol, mean, sd)) * cof, ncol=ncol)
+    # increase expression for cluster 1
+    d_input[[i]][seq_len(n_da) ,1] <- 
+      sinh(rnorm(n_da, mean + 2, sd)) * cof
+  }
+  d_input
+}
+
+# set parameter and simulat
+d_input <- comb_sim(X_true, nr_samples = 50)
+
+```
+
+The objects `experiment_info`, `da_formula` and `contrast` are the same as specified above, but additionally information about the measured markers has to be supplied.
+```{r wrapper function marker info}
+marker_info <- data.frame(
+  channel_name = paste0("channel", sprintf("%03d", seq_len(10))),
+  marker_name = paste0("marker", sprintf("%02d", seq_len(10))),
+  marker_class = factor(c(rep("type", 10)),
+                        levels = c("type", "state", "none")),
+  stringsAsFactors = FALSE
+)
+```
+
+Finally the wrapper function can be run. Argument `mi_reps` is to specify the number of repetitions in the multiple imputation and `imputation_method` allows to set the imputation method. To speed up the computation, a `BiocParallelParam` object (e.g. `MulticoreParam`, from package [BiocParallel](https://bioconductor.org/packages/release/bioc/html/BiocParallel.html)) can be given to the argument `BPPARAM` to parallelize parts of the computation.
+```{r run wrapper function}
+# Run wrapper function
+out_DA <- censcyt(d_input, 
+                  experiment_info, 
+                  marker_info,
+                  formula = da_formula, 
+                  contrast = contrast,
+                  meta_clustering = TRUE, 
+                  meta_k = 10,
+                  seed_clustering = 123, 
+                  verbose = FALSE, 
+                  mi_reps = 10,
+                  imputation_method = "km",
+                  BPPARAM=BiocParallel::MulticoreParam(workers = 1))
+```
+
+```{r run wrapper result, fig.width=10}
+
+# Display results for top DA clusters
+topTable(out_DA, format_vals = TRUE)
+
+# Plot heatmap for DA tests
+plotHeatmap(out_DA, 
+            analysis_type = "DA", 
+            sample_order = order(X_true))
 ```
 
 

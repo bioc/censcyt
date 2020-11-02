@@ -183,7 +183,7 @@ Wrapper function to run complete \code{censcyt} pipeline
 \details{
 This wrapper function runs the complete  \code{\link[diffcyt]{diffcyt}} analysis 
 pipeline where the only difference is the analysis step which uses the functions
-from \code{censcyt}
+from \code{censcyt} (which is currently only \code{\link{testDA_censoredGLMM}}).
 
 For more details about the functions for the individual steps, see 
 \code{\link[diffcyt]{diffcyt}}, the \code{\link{diffcyt}} vignette, 

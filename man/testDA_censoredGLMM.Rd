@@ -2,7 +2,7 @@
 % Please edit documentation in R/testDA_censoredGLMM.R
 \name{testDA_censoredGLMM}
 \alias{testDA_censoredGLMM}
-\title{Test for differential abundance: method 'diffcyt-DA-censored-GLMM'}
+\title{Test for differential abundance: method 'censcyt-DA-censored-GLMM'}
 \usage{
 testDA_censoredGLMM(
   d_counts,
@@ -72,7 +72,7 @@ Returns a new \code{\link{SummarizedExperiment}} object, with differential test
 }
 \description{
 Calculate tests for differential abundance of cell populations using method
-'diffcyt-DA-censored-GLMM'
+'censcyt-DA-censored-GLMM'
 }
 \details{
 Calculates tests for differential abundance of clusters, using generalized linear mixed
