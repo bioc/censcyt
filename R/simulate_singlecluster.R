@@ -31,7 +31,7 @@
 #' variable and the censoring time. Should be a list of lists, where the elements
 #' of the outer lists are 'X' the true value and 'C' the censoring time. The
 #' inner lists should have two keywords, 'shape' and 'scale', for the parameters
-#' of the Weibull distribution (See \code{\link[stats:rweibull]{rweibull}}).
+#' of the Weibull distribution (See \code{\link[stats]{Weibull}}).
 #' 
 #' @param censoring_dependent_on_covariate Logical. If
 #'  censoring should depend on a covariate. The respective covariate needs to

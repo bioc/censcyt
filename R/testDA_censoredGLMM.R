@@ -23,8 +23,8 @@
 #' @param BPPARAM specify parallelization option as one of 
 #'  \code{\link{BiocParallelParam}} if 'BiocParallel' is available
 #'  otherwise no parallelization.
-#'  e.g. \code{\link[BiocParallel:MulticoreParam]{MulticoreParam}}(workers=2) for parallelization 
-#'  with two cores. Default is \code{\link[BiocParallel:SerialParam]{SerialParam}}()
+#'  e.g. \code{\link[BiocParallel]{MulticoreParam-class}}(workers=2) for parallelization 
+#'  with two cores. Default is \code{\link[BiocParallel]{SerialParam-class}}()
 #'  (no parallelization). 
 #'  
 #' @param verbose Logical.
