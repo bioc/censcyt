@@ -55,10 +55,10 @@ the 'trimmed mean of M-values' (TMM) method from the \code{edgeR} package.
 Alternatively, a vector of values can be provided (the values should multiply to 1).}
 
 \item{BPPARAM}{specify parallelization option as one of 
-\code{\link[BiocParallel]{BiocParallelParam}} if 'BiocParallel' is available
+\code{\link{BiocParallelParam}} if 'BiocParallel' is available
 otherwise no parallelization.
-e.g. \code{\link[BiocParallel]{MulticoreParam}}(workers=2) for parallelization 
-with two cores. Default is \code{\link[BiocParallel]{SerialParam}}()
+e.g. \code{\link[BiocParallel:MulticoreParam]{MulticoreParam}}(workers=2) for parallelization 
+with two cores. Default is \code{\link[BiocParallel:SerialParam]{SerialParam}}()
 (no parallelization).}
 
 \item{verbose}{Logical.}

@@ -39,15 +39,15 @@ censcyt(
 )
 }
 \arguments{
-\item{d_input}{Input data. Must be either: (i) a \code{\link[flowCore]{flowSet}} or list of
-\code{\link[flowCore]{flowFrame}s}, \code{\link{DataFrame}s}, \code{data.frames}, or matrices
+\item{d_input}{Input data. Must be either: (i) a \code{\link[flowCore:flowSet]{flowSet}} or list of
+\code{\link[flowCore:flowFrame]{flowFrame}s}, \code{\link{DataFrame}s}, \code{data.frames}, or matrices
 as input (one \code{flowFrame} or list item per sample) (see
-\code{\link{prepareData}}); or (ii) a \code{CATALYST} \code{daFrame} (containing
+\code{\link[diffcyt:prepareData]{prepareData}}); or (ii) a \code{CATALYST} \code{daFrame} (containing
 cluster labels in \code{rowData}; see vignette for an example).}
 
 \item{experiment_info}{\code{data.frame}, \code{\link{DataFrame}}, or
-\code{\link{tbl_df}} of experiment information, for example sample IDs and group IDs.
-Must contain a column named \code{sample_id}. See \code{\link[diffcyt]{prepareData}}. (Not
+\code{{tbl_df}} of experiment information, for example sample IDs and group IDs.
+Must contain a column named \code{sample_id}. See \code{\link[diffcyt:prepareData]{prepareData}}. (Not
 required when providing a \code{CATALYST} \code{daFrame} for \code{d_input}.)}
 
 \item{marker_info}{\code{data.frame}, \code{\link{DataFrame}}, or \code{\link{tbl_df}}
@@ -165,9 +165,9 @@ One of \code{km},\code{km_exp},\code{km_wei},\code{km_os}, \code{rs}, \code{mrl}
 \code{cc}, \code{pmm}. See \code{\link{testDA_censoredGLMM}}.}
 
 \item{BPPARAM}{Specification of parallelization option as one of
-\code{\link[BiocParallel]{BiocParallelParam}} if \code{BiocParallel} is available 
-otherwise no parallelization is used. e.g. \code{\link[BiocParallel]{MulticoreParam}}(workers=2) 
-for parallelization  with two cores. Default is \code{\link[BiocParallel]{SerialParam}}()
+\code{\link{BiocParallelParam}} if \code{BiocParallel} is available 
+otherwise no parallelization is used. e.g. \code{\link[BiocParallel:MulticoreParam]{MulticoreParam}}(workers=2) 
+for parallelization  with two cores. Default is \code{\link[BiocParallel:SerialParam]{SerialParam}}()
 (no parallelization).}
 }
 \value{
@@ -193,8 +193,8 @@ is a slightly adapted summary from \code{\link[diffcyt]{diffcyt}}:
 Running the individual functions may provide additional
 flexibility, especially for complex analyses.
 
-The input data can be provided as a \code{\link[flowCore]{flowSet}} or a list of
-\code{\link[flowCore]{flowFrame}s}, \code{\link{DataFrame}s}, \code{data.frames}, or matrices
+The input data can be provided as a \code{\link[flowCore:flowSet]{flowSet}} or a list of
+\code{\link[flowCore:flowFrame]{flowFrame}s}, \code{\link{DataFrame}s}, \code{data.frames}, or matrices
 (one \code{flowFrame} or list item per sample). Alternatively, it is also possible to
 provide the input as a \code{daFrame} object from the \code{CATALYST} Bioconductor
 package (Chevrier, Crowell, Zanotelli et al., 2018). This can be useful when initial
@@ -203,8 +203,8 @@ exploratory analyses and clustering have been performed using \code{CATALYST}; t
 \code{rowData}) can then be provided directly to the \code{censcyt} functions for
 differential testing.
 
-Minimum required arguments when not providing a \code{\link[flowCore]{flowSet}} or list of
-\code{\link[flowCore]{flowFrame}s}, \code{\link{DataFrame}s}, \code{data.frames}, or matrices:
+Minimum required arguments when not providing a \code{\link[flowCore:flowSet]{flowSet}} or list of
+\code{\link[flowCore:flowFrame]{flowFrame}s}, \code{\link{DataFrame}s}, \code{data.frames}, or matrices:
 
 \itemize{
 \item \code{d_input}

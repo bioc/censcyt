@@ -22,7 +22,7 @@ simulate_multicluster(
 }
 \arguments{
 \item{counts}{the reference counts data set, either a matrix with rows as cluster and colums as samples or
-a \code{\link[SummarizedExperiment]{SummarizedExperiment}} object as generated from \code{\link{calcCounts}}.}
+a \code{\link[SummarizedExperiment:SummarizedExperiment]{SummarizedExperiment}} object as generated from \code{\link{calcCounts}}.}
 
 \item{nr_diff}{number of clusters where an association should be introduced. Has to be an even number.}
 
@@ -58,7 +58,7 @@ a vector of length 2 indicating the paired clusters can be given. Default is FAL
 non association clusters. The drawback is that one of the two paired clusters with an association
 will not follow a GLMM (binomial link function) exactly any more. Default is TRUE.}
 
-\item{return_summarized_experiment}{logical. Should the counts returned as a \code{\link[SummarizedExperiment]{SummarizedExperiment}}
+\item{return_summarized_experiment}{logical. Should the counts returned as a \code{\link[SummarizedExperiment:SummarizedExperiment]{SummarizedExperiment}}
 object. Default is FALSE.}
 }
 \value{

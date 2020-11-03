@@ -1,7 +1,7 @@
 #' Simulate multicluster counts with time dependent association from a Dirichlet-Multinomial distribution
 #'
 #' @param counts the reference counts data set, either a matrix with rows as cluster and colums as samples or
-#'               a \code{\link[SummarizedExperiment]{SummarizedExperiment}} object as generated from \code{\link{calcCounts}}.
+#'               a \code{\link[SummarizedExperiment:SummarizedExperiment]{SummarizedExperiment}} object as generated from \code{\link{calcCounts}}.
 #' @param nr_diff number of clusters where an association should be introduced. Has to be an even number. 
 #' @param nr_samples number of samples in output data. If NULL will set to same as input data.
 #' @param alphas alpha parameter of Dirichlet-Multinomial distribution. If 'NULL' will be estimated from 'counts'.
@@ -25,7 +25,7 @@
 #' @param enforce_sum_alpha Logical. Should the total sum of alphas be kept constant to ensure randomness of
 #'                          non association clusters. The drawback is that one of the two paired clusters with an association
 #'                          will not follow a GLMM (binomial link function) exactly any more. Default is TRUE.
-#' @param return_summarized_experiment logical. Should the counts returned as a \code{\link[SummarizedExperiment]{SummarizedExperiment}}
+#' @param return_summarized_experiment logical. Should the counts returned as a \code{\link[SummarizedExperiment:SummarizedExperiment]{SummarizedExperiment}}
 #'   object. Default is FALSE.
 #'
 #' @return returns a list with elements counts (either matrix or SummarizedExperiment object, depending on input),

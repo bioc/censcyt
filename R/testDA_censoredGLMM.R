@@ -21,10 +21,10 @@
 #'  'km','km_exp','km_wei','km_os', 'rs', 'mrl', 'cc', 'pmm'. See details. default = 'km'.
 #'  
 #' @param BPPARAM specify parallelization option as one of 
-#'  \code{\link[BiocParallel]{BiocParallelParam}} if 'BiocParallel' is available
+#'  \code{\link{BiocParallelParam}} if 'BiocParallel' is available
 #'  otherwise no parallelization.
-#'  e.g. \code{\link[BiocParallel]{MulticoreParam}}(workers=2) for parallelization 
-#'  with two cores. Default is \code{\link[BiocParallel]{SerialParam}}()
+#'  e.g. \code{\link[BiocParallel:MulticoreParam]{MulticoreParam}}(workers=2) for parallelization 
+#'  with two cores. Default is \code{\link[BiocParallel:SerialParam]{SerialParam}}()
 #'  (no parallelization). 
 #'  
 #' @param verbose Logical.
