@@ -5,7 +5,7 @@
 
 ## Summary
 
-`censcyt` is an R package extending the [diffcyt](https://github.com/lmweber/diffcyt) (differential discovery in high-dimensional cytometry via high-resolution clustering) pipeline. `censcyt` (**Cens**ored diff**cyt**) includes methods for differential abundance analysis in the presence of a covariate subject to right censoring. It uses the *reversed* association testing approach (like `diffcyt`) meaning the censored variable (e.g. survival time) is modeled as a predictor. Classical survival analysis methods on the other hand model the censored variable as the response.
+`censcyt` is an R package extending the [diffcyt](https://github.com/lmweber/diffcyt) (differential discovery in high-dimensional cytometry via high-resolution clustering) pipeline. `censcyt` (**Cens**ored diff**cyt**) includes methods for differential abundance analysis in the presence of a covariate subject to right censoring. It uses the *reversed* association testing approach (like `diffcyt`) meaning the censored variable (e.g. survival time) is modeled as a predictor. Classical survival analysis methods on the other hand model the censored variable as the response. See also our [preprint on bioarxiv](https://www.biorxiv.org/content/10.1101/2020.11.09.374447v1).
 
 
 ## Vignettes
