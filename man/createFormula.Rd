@@ -46,7 +46,7 @@ Create model formula and corresponding data frame of variables for model fitting
 }
 \details{
 Creates a model formula and corresponding data frame of variables specifying the models
-to be fitted. 
+to be fitted. Extends \code{\link[diffcyt]{createFormula}} from \code{diffcyt}.
 
 The output is a list containing the model formula and corresponding data frame of
 variables (one column per formula term). These can then be provided to differential
