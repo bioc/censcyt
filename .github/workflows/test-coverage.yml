@@ -7,7 +7,7 @@ on:
 name: test-coverage
 
 jobs:
-  R-CMD-check:
+  test-coverage:
     runs-on: ubuntu-latest
     container: bioconductor/bioconductor_docker:devel
 
