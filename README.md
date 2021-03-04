@@ -23,6 +23,6 @@ To install directly from GitHub run the following code:
 install.packages("devtools")
 
 # Then install 'censcyt' package from GitHub
-devtools::install_github("gerberreto/censcyt")
+devtools::install_github("retogerber/censcyt")
 ```
 
