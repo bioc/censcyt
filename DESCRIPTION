@@ -18,7 +18,7 @@ biocViews:
     Software,
     Survival
 Depends: 
-    R (>= 4.1),
+    R (>= 4.0),
     diffcyt
 Imports:
     BiocParallel,
@@ -42,7 +42,7 @@ Imports:
     survival,
     tibble,
     tidyr, 
-    utils 
+    utils
 VignetteBuilder: knitr
 Suggests:
     BiocStyle,
