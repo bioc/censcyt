@@ -1,6 +1,6 @@
 # censcyt
-
-[![Build Status](https://travis-ci.org/retogerber/censcyt.svg?branch=main)](https://travis-ci.org/retogerber/censcyt)
+[![Bioc devel](http://bioconductor.org/shields/build/devel/bioc/censcyt.svg)](http://bioconductor.org/checkResults/devel/bioc-LATEST/censcyt)
+[![R build status](https://github.com/retogerber/censcyt/workflows/R-CMD-check/badge.svg)](https://github.com/retogerber/censcyt/actions)
 [![codecov](https://codecov.io/gh/retogerber/censcyt/branch/main/graph/badge.svg)](https://codecov.io/gh/retogerber/censcyt)
 
 ## Summary
