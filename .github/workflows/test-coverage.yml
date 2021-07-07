@@ -9,7 +9,7 @@ name: test-coverage
 jobs:
   test-coverage:
     runs-on: ubuntu-latest
-    container: bioconductor/bioconductor_docker:RELEASE_3_12
+    container: bioconductor/bioconductor_docker:latest
 
     steps:
       - name: Check out repo

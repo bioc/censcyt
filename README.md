@@ -1,5 +1,6 @@
 # censcyt
 [![Bioc devel](http://bioconductor.org/shields/build/devel/bioc/censcyt.svg)](http://bioconductor.org/checkResults/devel/bioc-LATEST/censcyt)
+[![Bioc release](http://bioconductor.org/shields/build/release/bioc/censcyt.svg)](http://bioconductor.org/checkResults/release/bioc-LATEST/censcyt)
 [![R build status](https://github.com/retogerber/censcyt/workflows/R-CMD-check/badge.svg)](https://github.com/retogerber/censcyt/actions)
 [![codecov](https://codecov.io/gh/retogerber/censcyt/branch/main/graph/badge.svg)](https://codecov.io/gh/retogerber/censcyt)
 
@@ -15,7 +16,18 @@ An example use of the `censcyt` methods for differential abundance analysis with
 available in the [package vignette](http://bioconductor.org/packages/devel/bioc/vignettes/censcyt/inst/doc/censored_covariate.html) on bioconductor.
 
 
-## Development version
+## Install
+
+To install from bioconductor:
+```{r}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("censcyt")
+```
+
+
+### Development version
 
 To install directly from GitHub run the following code:
 ```{r}
