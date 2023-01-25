@@ -100,7 +100,7 @@ extract_variables_from_formula <- function(formula){
 #   create_glmm_formula(cens_formula)
 create_glmm_formula <- function(formula){
   extracted_vars <- extract_variables_from_formula(formula)
-  outformula <- stringr::str_replace(formula, "Surv\\([[:alnum:] ,._]*\\)",extracted_vars$censored_variable)
+  outformula <- stringr::str_replace(as.character(formula), "Surv\\([[:alnum:] ,._]*\\)",extracted_vars$censored_variable)
   as.formula(paste0(outformula[2],outformula[1],outformula[3]))
 }
 
